@@ -1,0 +1,115 @@
+﻿@page "/fetchdata"
+
+@using MasterMind.Data
+@inject Spielleiter Spielleiter
+
+<h1>Master Mind</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+<button class="btn btn-primary" @onclick="StarteSpiel">Neues Spiel</button>
+
+@if (_ergebnis != null)
+{
+    <div class="alert alert-success" role="alert">
+        @_ergebnis
+    </div>
+}
+
+@if (_spielzüge == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>Aktionen</th>
+                <th>E1</th>
+                <th>E2</th>
+                <th>E3</th>
+                <th>E4</th>
+                <th>E5</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < _spielzüge.Count; i++)
+            {
+                var spielzug = _spielzüge[i];
+                <tr>
+
+                    @if (i == _spielzüge.Count - 1)
+                    {
+
+                        @for (int j = 0; j < 5; j++)
+                        {
+                            <td><ColorSelect Number="@j" GewählteFarbe="@spielzug.Rate[j]" OnChangeEvent="FügeGewählteFarbeHinzu" /></td>
+                        }
+                        <td><button class="btn btn-primary" @onclick="Auswerten">Auswerten</button></td>
+
+                    }
+                    else
+                    {
+
+                        @for (int j = 0; j < 5; j++)
+                        {
+                            <td>@spielzug.Rate[j]</td>
+                        }
+                        <td></td>
+                    }
+
+                    @for (int k = 0; k < 5; k++)
+                    {
+                        <td>@spielzug.Ergebnis?.Ergebnis[k]</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<Spielzug> _spielzüge;
+    private string _ergebnis;
+    private Spielzug _aktuellerSpielzug => _spielzüge.LastOrDefault();
+
+    protected override Task OnInitializedAsync()
+    {
+        _spielzüge = Spielleiter.GetSpielzüge();
+        return Task.CompletedTask;
+    }
+
+    public void StarteSpiel()
+    {
+        Reset();
+        _spielzüge.Add(Spielleiter.StarteSpiel());
+    }
+
+    private void Reset()
+    {
+        _ergebnis = null;
+        _spielzüge.Clear();
+    }
+
+    public void Auswerten()
+    {
+        var spielzug = Spielleiter.WerteAus(_spielzüge.LastOrDefault().Rate);
+        if (spielzug == null)
+        {
+            _ergebnis = "Juhu, du hast gewonnen!";
+            return;
+        }
+        _spielzüge.Add(spielzug);
+    }
+
+    public void FügeGewählteFarbeHinzu(KeyValuePair<int, Farben> keyValuePair)
+    {
+        _aktuellerSpielzug.Rate[keyValuePair.Key] = keyValuePair.Value;
+    }
+}

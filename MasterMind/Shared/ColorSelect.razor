@@ -1,0 +1,25 @@
+﻿@using MasterMind.Data;
+
+<select @onchange="OnSelectionChanged" id="@Number">
+    @foreach (var item in Enum.GetNames(typeof(Farben)))
+    {
+        <option selected="@(GewählteFarbe.ToString() == item)" value=@item style="background-color:@item.ToLower()">@item</option>
+    }
+</select>
+
+@code {
+    [Parameter]
+    public int Number { get; set; }
+    [Parameter]
+    public Farben GewählteFarbe { get; set; }
+}
+
+@functions {
+    [Parameter]
+    public EventCallback<KeyValuePair<int, Farben>> OnChangeEvent { get; set; }
+
+    private void OnSelectionChanged(ChangeEventArgs e)
+    {
+        OnChangeEvent.InvokeAsync(new KeyValuePair<int, Farben>(Number, (Farben)Enum.Parse(typeof(Farben), e.Value.ToString())));
+    }
+}
