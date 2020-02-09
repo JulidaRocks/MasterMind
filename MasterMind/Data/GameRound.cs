@@ -46,7 +46,7 @@ namespace MasterMind.Data
                 }
             }
 
-            moveResult.EvaluatedResultColors = moveResult.EvaluatedResultColors.OrderByDescending(e => (int)e).ToArray();
+            moveResult.EvaluatedResultColors = moveResult.EvaluatedResultColors.OrderBy(e => (int)e).ToArray();
             return moveResult;
         }
     }

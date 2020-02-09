@@ -7,11 +7,13 @@
 
 <p><button class="btn btn-primary" @onclick="StartGame">New Game</button></p>
 
-@if (_ergebnis != null)
+@if (_resultText != null)
 {
-    <div class="alert alert-success" role="alert">
-        @_ergebnis
-    </div>
+    <p>
+        <div class="alert alert-success" role="alert">
+            @_resultText
+        </div>
+    </p>
 }
 
 @if (_moves == null)
@@ -23,17 +25,9 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>Actions</th>
-                <th>E1</th>
-                <th>E2</th>
-                <th>E3</th>
-                <th>E4</th>
-                <th>E5</th>
+                <th colspan="5" align="center" style="text-align:center;">Play Area</th>
+                <th align="center" style="text-align:center;">Actions</th>
+                <th colspan="5" align="center" style="text-align:center;">Result Area</th>
             </tr>
         </thead>
         <tbody>
@@ -49,7 +43,7 @@ else
                         {
                             <td><ColorSelect Number="@j" SelectedColor="@move.GuessedColors[j]" OnChangeEvent="AddSelectedColor" /></td>
                         }
-                        <td><button class="btn btn-primary" @onclick="Evaluate">Evaluate</button></td>
+                        <td style="text-align:center;"><button class="btn btn-primary" @onclick="Evaluate">Evaluate</button></td>
 
                     }
                     else
@@ -74,7 +68,7 @@ else
 
 @code {
     private IList<Move> _moves;
-    private string _ergebnis;
+    private string _resultText;
     private Move _currentMove => _moves.LastOrDefault();
 
     protected override Task OnInitializedAsync()
@@ -91,7 +85,7 @@ else
 
     private void Reset()
     {
-        _ergebnis = null;
+        _resultText = null;
         _moves.Clear();
     }
 
@@ -100,7 +94,7 @@ else
         var spielzug = GameMaster.Evaluate(_moves.LastOrDefault().GuessedColors);
         if (spielzug == null)
         {
-            _ergebnis = "Juhu, du hast gewonnen!";
+            _resultText = "Woohoo, you won!";
             return;
         }
         _moves.Add(spielzug);
