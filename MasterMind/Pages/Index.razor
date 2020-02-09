@@ -1,5 +1,26 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@using MasterMind.Data;
+@inject WikipediaService WikipediaService;
 
-Welcome to your new app.
+@if (_page == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h1>@_page.page231150.title</h1>
+
+    @((MarkupString)_page.page231150.extract)
+
+    <p>Source: Wikipedia</p>
+}
+
+@code {
+    private WikipediaPage _page;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _page = await WikipediaService.GetMastermindArticleAsync();
+    }
+}

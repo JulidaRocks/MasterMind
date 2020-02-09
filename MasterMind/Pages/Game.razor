@@ -3,11 +3,9 @@
 @using MasterMind.Data;
 @inject Spielleiter Spielleiter
 
-<h1>Master Mind</h1>
+<h1>Mastermind</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
-
-<button class="btn btn-primary" @onclick="StarteSpiel">Neues Spiel</button>
+<p><button class="btn btn-primary" @onclick="StarteSpiel">New Game</button></p>
 
 @if (_ergebnis != null)
 {
