@@ -1,6 +1,6 @@
 ﻿namespace MasterMind.Data
 {
-    public enum Ergebnisfarben
+    public enum ResultColors
     {
         Undefined,
         White,

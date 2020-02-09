@@ -1,6 +1,6 @@
 ﻿namespace MasterMind.Data
 {
-    public enum Farben
+    public enum GameColors
     {
         Undefined,
         Red,

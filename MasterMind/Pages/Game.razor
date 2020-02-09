@@ -1,11 +1,11 @@
 ﻿@page "/game"
 
 @using MasterMind.Data;
-@inject Spielleiter Spielleiter
+@inject GameMaster GameMaster
 
 <h1>Mastermind</h1>
 
-<p><button class="btn btn-primary" @onclick="StarteSpiel">New Game</button></p>
+<p><button class="btn btn-primary" @onclick="StartGame">New Game</button></p>
 
 @if (_ergebnis != null)
 {
@@ -14,7 +14,7 @@
     </div>
 }
 
-@if (_spielzüge == null)
+@if (_moves == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -28,7 +28,7 @@ else
                 <th>3</th>
                 <th>4</th>
                 <th>5</th>
-                <th>Aktionen</th>
+                <th>Actions</th>
                 <th>E1</th>
                 <th>E2</th>
                 <th>E3</th>
@@ -37,19 +37,19 @@ else
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < _spielzüge.Count; i++)
+            @for (int i = 0; i < _moves.Count; i++)
             {
-                var spielzug = _spielzüge[i];
+                var move = _moves[i];
                 <tr>
 
-                    @if (i == _spielzüge.Count - 1)
+                    @if (i == _moves.Count - 1)
                     {
 
                         @for (int j = 0; j < 5; j++)
                         {
-                            <td><ColorSelect Number="@j" GewählteFarbe="@spielzug.Rate[j]" OnChangeEvent="FügeGewählteFarbeHinzu" /></td>
+                            <td><ColorSelect Number="@j" SelectedColor="@move.GuessedColors[j]" OnChangeEvent="AddSelectedColor" /></td>
                         }
-                        <td><button class="btn btn-primary" @onclick="Auswerten">Auswerten</button></td>
+                        <td><button class="btn btn-primary" @onclick="Evaluate">Evaluate</button></td>
 
                     }
                     else
@@ -57,14 +57,14 @@ else
 
                         @for (int j = 0; j < 5; j++)
                         {
-                            <td><Spielstein Color=@spielzug.Rate[j].ToString() /></td>
+                            <td><Peg Color=@move.GuessedColors[j].ToString() /></td>
                         }
                         <td></td>
                     }
 
                     @for (int k = 0; k < 5; k++)
                     {
-                        <td><Spielstein Color=@spielzug.Ergebnis?.Ergebnis[k].ToString() /></td>
+                        <td><Peg Color=@move.MoveResult?.EvaluatedResultColors[k].ToString() /></td>
                     }
                 </tr>
             }
@@ -73,41 +73,41 @@ else
 }
 
 @code {
-    private IList<Spielzug> _spielzüge;
+    private IList<Move> _moves;
     private string _ergebnis;
-    private Spielzug _aktuellerSpielzug => _spielzüge.LastOrDefault();
+    private Move _currentMove => _moves.LastOrDefault();
 
     protected override Task OnInitializedAsync()
     {
-        _spielzüge = Spielleiter.GetSpielzüge();
+        _moves = GameMaster.GetMoves();
         return Task.CompletedTask;
     }
 
-    public void StarteSpiel()
+    public void StartGame()
     {
         Reset();
-        _spielzüge.Add(Spielleiter.StarteSpiel());
+        _moves.Add(GameMaster.StartGame());
     }
 
     private void Reset()
     {
         _ergebnis = null;
-        _spielzüge.Clear();
+        _moves.Clear();
     }
 
-    public void Auswerten()
+    public void Evaluate()
     {
-        var spielzug = Spielleiter.WerteAus(_spielzüge.LastOrDefault().Rate);
+        var spielzug = GameMaster.Evaluate(_moves.LastOrDefault().GuessedColors);
         if (spielzug == null)
         {
             _ergebnis = "Juhu, du hast gewonnen!";
             return;
         }
-        _spielzüge.Add(spielzug);
+        _moves.Add(spielzug);
     }
 
-    public void FügeGewählteFarbeHinzu(KeyValuePair<int, Farben> keyValuePair)
+    public void AddSelectedColor(KeyValuePair<int, GameColors> keyValuePair)
     {
-        _aktuellerSpielzug.Rate[keyValuePair.Key] = keyValuePair.Value;
+        _currentMove.GuessedColors[keyValuePair.Key] = keyValuePair.Value;
     }
 }

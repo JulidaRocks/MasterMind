@@ -1,34 +1,34 @@
 ﻿@using MasterMind.Data;
 
-    <select @onchange="OnSelectionChanged" id="@Number" style="background-color:@GewählteFarbe.ToString().ToLower();width:35px;">
-        @foreach (var item in Enum.GetNames(typeof(Farben)))
+<select @onchange="OnSelectionChanged" id="@Number" style="background-color:@SelectedColor.ToString().ToLower();width:35px;">
+    @foreach (var item in Enum.GetNames(typeof(GameColors)))
+    {
+        if (item == GameColors.Undefined.ToString())
         {
-            if (item == Farben.Undefined.ToString())
-            {
-                <option selected="@(GewählteFarbe.ToString() == item)" value=@item style="background-color:darkgray;">@item</option>
-            }
-            else
-            {
-                <option selected="@(GewählteFarbe.ToString() == item)" value=@item style="background-color:@item.ToLower();"></option>
-            }
+            <option selected="@(SelectedColor.ToString() == item)" value=@item style="background-color:darkgray;">@item</option>
         }
-    </select>
+        else
+        {
+            <option selected="@(SelectedColor.ToString() == item)" value=@item style="background-color:@item.ToLower();"></option>
+        }
+    }
+</select>
 
 @code {
     [Parameter]
     public int Number { get; set; }
     [Parameter]
-    public Farben GewählteFarbe { get; set; }
+    public GameColors SelectedColor { get; set; }
 }
 
 @functions {
     [Parameter]
-    public EventCallback<KeyValuePair<int, Farben>> OnChangeEvent { get; set; }
+    public EventCallback<KeyValuePair<int, GameColors>> OnChangeEvent { get; set; }
 
     private void OnSelectionChanged(ChangeEventArgs e)
     {
-        var farbe = (Farben)Enum.Parse(typeof(Farben), e.Value.ToString());
-        GewählteFarbe = farbe;
-        OnChangeEvent.InvokeAsync(new KeyValuePair<int, Farben>(Number, farbe));
+        var color = (GameColors)Enum.Parse(typeof(GameColors), e.Value.ToString());
+        SelectedColor = color;
+        OnChangeEvent.InvokeAsync(new KeyValuePair<int, GameColors>(Number, color));
     }
 }

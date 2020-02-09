@@ -22,7 +22,7 @@ namespace MasterMind
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<Spielleiter>();
+            services.AddSingleton<GameMaster>();
             services.AddSingleton<WikipediaService>();
         }
 
