@@ -1,0 +1,11 @@
+﻿@using MasterMind.Data;
+
+@if (Color != null && Color != Farben.Undefined.ToString())
+{
+    <div style="background-color:@Color.ToLower();width:20px;height:20px;border-radius:50%;border:1px solid black;"></div>
+}
+
+@code {
+    [Parameter]
+    public string Color { get; set; }
+}

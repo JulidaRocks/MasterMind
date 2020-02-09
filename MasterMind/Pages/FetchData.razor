@@ -59,14 +59,14 @@ else
 
                         @for (int j = 0; j < 5; j++)
                         {
-                            <td>@spielzug.Rate[j]</td>
+                            <td><Spielstein Color=@spielzug.Rate[j].ToString() /></td>
                         }
                         <td></td>
                     }
 
                     @for (int k = 0; k < 5; k++)
                     {
-                        <td>@spielzug.Ergebnis?.Ergebnis[k]</td>
+                        <td><Spielstein Color=@spielzug.Ergebnis?.Ergebnis[k].ToString() /></td>
                     }
                 </tr>
             }
