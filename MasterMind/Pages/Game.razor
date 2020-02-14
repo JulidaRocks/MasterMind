@@ -91,13 +91,14 @@ else
 
     public void Evaluate()
     {
-        var spielzug = GameMaster.Evaluate(_moves.LastOrDefault().GuessedColors);
-        if (spielzug == null)
+        var move = GameMaster.Evaluate(_moves.LastOrDefault().GuessedColors);
+
+        if (move == null)
         {
             _resultText = "Woohoo, you won!";
             return;
         }
-        _moves.Add(spielzug);
+        _moves.Add(move);
     }
 
     public void AddSelectedColor(KeyValuePair<int, GameColors> keyValuePair)
